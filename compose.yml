@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
     hostname: mail.ipuniverse.org
     environment:
-      - SERVICE_URL_MAIL_8080
+      - $SERVICE_URL_MAIL_8080
       - TZ=Etc/UTC
       - STALWART__STORE__DIRECTORY__TYPE=postgres
       - STALWART__STORE__DIRECTORY__URI=postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart
