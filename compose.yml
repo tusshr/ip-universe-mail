@@ -40,18 +40,7 @@ services:
       - "465:465" # SMTPS (implicit TLS)
       - "587:587" # SMTP submission (STARTTLS)
       - "993:993" # IMAPS (secure IMAP for clients)
-      - "8081:8080" # Stalwart admin UI / API (change host port if 8081 is busy)
     volumes:
       - ./stalwart/config:/opt/stalwart/config
       - ./stalwart/data:/opt/stalwart/data
       - ./stalwart/logs:/opt/stalwart/log
-    labels:
-      traefik.enable: "true"
-      traefik.http.services.stalwart-admin.loadbalancer.server.port: "8080" # let external proxies reach the admin UI
-      traefik.http.routers.stalwart-admin.rule: "Host(`mail.ipuniverse.org`)" # adjust host or remove if Traefik is not in use
-      traefik.http.routers.stalwart-admin.entrypoints: http
-      traefik.http.routers.stalwart-admin.service: stalwart-admin
-      traefik.http.routers.stalwart-admin-https.rule: "Host(`mail.ipuniverse.org`)"
-      traefik.http.routers.stalwart-admin-https.entrypoints: https
-      traefik.http.routers.stalwart-admin-https.tls: "true"
-      traefik.http.routers.stalwart-admin-https.service: stalwart-admin
