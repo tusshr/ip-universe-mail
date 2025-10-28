@@ -17,23 +17,23 @@ services:
     restart: unless-stopped
     hostname: mail.ipuniverse.org
     environment:
-      TZ: Etc/UTC
-      STALWART__STORE__DIRECTORY__TYPE: postgres
-      STALWART__STORE__DIRECTORY__URI: "postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart"
-      STALWART__STORE__QUEUE__TYPE: postgres
-      STALWART__STORE__QUEUE__URI: "postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart"
-      STALWART__STORE__MAILBOX__TYPE: postgres
-      STALWART__STORE__MAILBOX__URI: "postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart"
-      STALWART__STORE__LOOKUP__TYPE: postgres
-      STALWART__STORE__LOOKUP__URI: "postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart"
-      STALWART__STORE__ENVELOPES__TYPE: postgres
-      STALWART__STORE__ENVELOPES__URI: "postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart"
-      STALWART__SERVER__PRIMARY_DOMAIN: ipuniverse.org
-      STALWART__SERVER__HOSTNAME: mail.ipuniverse.org
-      STALWART__ADMIN__BIND: 0.0.0.0:8080
-      STALWART__ADMIN__USERNAME: admin
-      STALWART__ADMIN__PASSWORD: change_me_admin
-      SERVICE_URL_MAIL_8080: /
+      - TZ=Etc/UTC
+      - STALWART__STORE__DIRECTORY__TYPE=postgres
+      - STALWART__STORE__DIRECTORY__URI=postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart
+      - STALWART__STORE__QUEUE__TYPE=postgres
+      - STALWART__STORE__QUEUE__URI=postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart
+      - STALWART__STORE__MAILBOX__TYPE=postgres
+      - STALWART__STORE__MAILBOX__URI=postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart
+      - STALWART__STORE__LOOKUP__TYPE=postgres
+      - STALWART__STORE__LOOKUP__URI=postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart
+      - STALWART__STORE__ENVELOPES__TYPE=postgres
+      - STALWART__STORE__ENVELOPES__URI=postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart
+      - STALWART__SERVER__PRIMARY_DOMAIN=ipuniverse.org
+      - STALWART__SERVER__HOSTNAME=mail.ipuniverse.org
+      - STALWART__ADMIN__BIND=0.0.0.0:8080
+      - STALWART__ADMIN__USERNAME=admin
+      - STALWART__ADMIN__PASSWORD=change_me_admin
+      - SERVICE_URL_MAIL_8080
     depends_on:
       - postgres
     expose:
