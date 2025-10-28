@@ -37,7 +37,7 @@ services:
     depends_on:
       - postgres
     expose:
-      - "8080" # expose admin UI to Coolify/Traefik within the Docker network
+      - "8080" # expose admin UI to the internal proxy network
     ports:
       - "25:25" # SMTP inbound (MX delivery)
       - "465:465" # SMTPS (implicit TLS)
