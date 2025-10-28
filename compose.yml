@@ -1,0 +1,47 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: stalwart-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: stalwart
+      POSTGRES_USER: stalwart
+      POSTGRES_PASSWORD: "${MAIL_DB_PASSWORD:-stalwart_pass}"
+      TZ: Etc/UTC
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+
+  mail:
+    image: stalwartlabs/stalwart:latest
+    container_name: stalwart-mail
+    restart: unless-stopped
+    hostname: mail.ipuniverse.org
+    environment:
+      TZ: Etc/UTC
+      STALWART__STORE__DIRECTORY__TYPE: postgres
+      STALWART__STORE__DIRECTORY__URI: "postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart"
+      STALWART__STORE__QUEUE__TYPE: postgres
+      STALWART__STORE__QUEUE__URI: "postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart"
+      STALWART__STORE__MAILBOX__TYPE: postgres
+      STALWART__STORE__MAILBOX__URI: "postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart"
+      STALWART__STORE__LOOKUP__TYPE: postgres
+      STALWART__STORE__LOOKUP__URI: "postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart"
+      STALWART__STORE__ENVELOPES__TYPE: postgres
+      STALWART__STORE__ENVELOPES__URI: "postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart"
+      STALWART__SERVER__PRIMARY_DOMAIN: ipuniverse.org
+      STALWART__SERVER__HOSTNAME: mail.ipuniverse.org
+      STALWART__ADMIN__BIND: 0.0.0.0:8080
+      STALWART__ADMIN__USERNAME: admin
+      STALWART__ADMIN__PASSWORD: change_me_admin
+    depends_on:
+      - postgres
+    ports:
+      - "25:25"     # SMTP inbound (MX delivery)
+      - "465:465"   # SMTPS (implicit TLS)
+      - "587:587"   # SMTP submission (STARTTLS)
+      - "993:993"   # IMAPS (secure IMAP for clients)
+      - "8081:8080" # Stalwart admin UI / API (change host port if 8080 is busy)
+    volumes:
+      - ./stalwart/config:/opt/stalwart/config
+      - ./stalwart/data:/opt/stalwart/data
+      - ./stalwart/logs:/opt/stalwart/log
