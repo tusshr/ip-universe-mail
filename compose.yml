@@ -1,7 +1,6 @@
 services:
   postgres:
     image: postgres:15-alpine
-    container_name: stalwart-postgres
     restart: unless-stopped
     environment:
       POSTGRES_DB: stalwart
@@ -13,7 +12,6 @@ services:
 
   mail:
     image: stalwartlabs/stalwart:latest
-    container_name: stalwart-mail
     restart: unless-stopped
     hostname: mail.ipuniverse.org
     environment:
