@@ -13,7 +13,9 @@ services:
   mail:
     image: stalwartlabs/stalwart:latest
     restart: unless-stopped
+    hostname: mail.ipuniverse.org
     environment:
+      - SERVICE_URL_MAIL_8080
       - TZ=Etc/UTC
       - STALWART__STORE__DIRECTORY__TYPE=postgres
       - STALWART__STORE__DIRECTORY__URI=postgres://stalwart:${MAIL_DB_PASSWORD:-stalwart_pass}@postgres:5432/stalwart
@@ -30,14 +32,13 @@ services:
       - STALWART__ADMIN__BIND=0.0.0.0:8080
       - STALWART__ADMIN__USERNAME=admin
       - STALWART__ADMIN__PASSWORD=change_me_admin
-      - SERVICE_URL_MAIL_8080=/
     depends_on:
       - postgres
     ports:
-      - "25:25" # SMTP inbound (MX delivery)
-      - "465:465" # SMTPS (implicit TLS)
-      - "587:587" # SMTP submission (STARTTLS)
-      - "993:993" # IMAPS (secure IMAP for clients)
+      - "25:25"
+      - "465:465"
+      - "587:587"
+      - "993:993"
       - "8081:8080"
     volumes:
       - ./stalwart/config:/opt/stalwart/config
