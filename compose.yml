@@ -9,16 +9,10 @@ services:
       TZ: Etc/UTC
     volumes:
       - ./postgres/data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U stalwart -d stalwart"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   mail:
     image: stalwartlabs/stalwart:latest
     restart: unless-stopped
-    hostname: mail.ipuniverse.org
     environment:
       - TZ=Etc/UTC
       - STALWART__STORE__DIRECTORY__TYPE=postgres
@@ -37,28 +31,15 @@ services:
       - STALWART__ADMIN__USERNAME=admin
       - STALWART__ADMIN__PASSWORD=change_me_admin
       - SERVICE_URL_MAIL_8080=/
-      - STALWART__ADMIN__TLS__ENABLE=false
     depends_on:
-      postgres:
-        condition: service_healthy
-    expose:
-      - "8080" # expose admin UI to the internal proxy network
+      - postgres
     ports:
       - "25:25" # SMTP inbound (MX delivery)
       - "465:465" # SMTPS (implicit TLS)
       - "587:587" # SMTP submission (STARTTLS)
       - "993:993" # IMAPS (secure IMAP for clients)
+      - "8081:8080"
     volumes:
       - ./stalwart/config:/opt/stalwart/config
       - ./stalwart/data:/opt/stalwart/data
       - ./stalwart/logs:/opt/stalwart/log
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "timeout 5 bash -c 'until nc -z localhost 8080; do sleep 1; done'",
-        ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
