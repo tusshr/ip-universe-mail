@@ -33,6 +33,7 @@ services:
       STALWART__ADMIN__BIND: 0.0.0.0:8080
       STALWART__ADMIN__USERNAME: admin
       STALWART__ADMIN__PASSWORD: change_me_admin
+      SERVICE_URL_MAIL_8080: /
     depends_on:
       - postgres
     ports:
