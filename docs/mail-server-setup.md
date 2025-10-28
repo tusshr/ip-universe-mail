@@ -11,14 +11,8 @@ The components run inside `compose.yml`:
 
 ## 1. Bootstrap
 
-1. Create a `.env` file (or export shell vars) with a strong password for the mail database:
-
-   ```bash
-   export MAIL_DB_PASSWORD='change_this'
-   ```
-
-2. Either export `MAIL_DB_PASSWORD` in your shell or create a `.env` file so Docker Compose picks it up (defaults to `stalwart_pass` if unset).
-3. Start the stack locally first:
+1. Open the project in Coolify, review the generated environment variables (`SERVICE_USER_POSTGRES`, `SERVICE_PASSWORD_POSTGRES`, `SERVICE_URL_MAIL_8080`, etc.), and override any defaults you care about (e.g., `STALWART_ADMIN_PASSWORD`).
+2. Start the stack locally first (or trigger a deploy from Coolify):
 
    ```bash
    docker compose up -d postgres
@@ -26,7 +20,7 @@ The components run inside `compose.yml`:
    ```
 
    On first boot Stalwart seeds `/opt/stalwart/config` with defaults inside the mounted `stalwart/` directory.
-   The compose file exposes the admin UI only inside the Docker network; Coolify’s proxy will publish it via `mail.ipuniverse.org`.
+   The compose file exposes the admin UI only inside the Docker network; Coolify’s proxy will publish it via `mail.ipuniverse.org` using the generated `SERVICE_URL_MAIL_8080`/`SERVICE_FQDN_MAIL_8080` values.
 
 ## 2. Secure the Admin UI
 
@@ -34,9 +28,9 @@ The components run inside `compose.yml`:
    - username: `admin`
    - password: `change_me_admin`
 2. **Immediately** change the password under **Account → Security**.
-3. Under **System → Storage**, switch every store (`Directory`, `Mailbox`, `Queue`, `Lookup`, `Envelopes`) to `PostgreSQL` and use this DSN:  
-   `postgres://stalwart:YOUR_PASSWORD@postgres:5432/stalwart`  
-   (replace `YOUR_PASSWORD` with the same value used in `MAIL_DB_PASSWORD`).
+3. Under **System → Storage**, switch every store (`Directory`, `Mailbox`, `Queue`, `Lookup`, `Envelopes`) to `PostgreSQL` and use:  
+   `postgres://SERVICE_USER_POSTGRES:SERVICE_PASSWORD_POSTGRES@postgres:5432/POSTGRES_DB`  
+   (substitute the generated values that Coolify shows under Environment; copy/paste is fine).
 4. Restart the `mail` container after saving.
 
 > Stalwart automatically creates the required tables the first time it connects to the database.
@@ -130,7 +124,7 @@ For app-side processing you can:
 - Expose the necessary ports (25, 465, 587, 993, and optional 4190 for Sieve, 8000 for JMAP); HTTP/HTTPS for the admin UI flow through Coolify’s proxy automatically.
 - Persist the volumes (`stalwart/config`, `stalwart/data`, `stalwart/logs`, `postgres/data`).
 - Configure health checks (e.g., TCP on 587 and 993).
-- Coolify’s “magic” environment variable `SERVICE_URL_MAIL_8080=/` (already included) makes Traefik forward the domain to container port 8080. If you rename the service from `mail`, update the variable accordingly.
+- Coolify’s “magic” environment variables `SERVICE_URL_MAIL_8080` and `SERVICE_FQDN_MAIL_8080` are already referenced in `compose.yml`, so Traefik proxies `http://mail.ipuniverse.org` to container port 8080 without exposing the port on the host. If you rename the service from `mail`, adjust those entries accordingly.
 
 ## 9. Operational Tips
 
