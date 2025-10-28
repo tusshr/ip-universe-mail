@@ -26,11 +26,11 @@ The components run inside `compose.yml`:
    ```
 
    On first boot Stalwart seeds `/opt/stalwart/config` with defaults inside the mounted `stalwart/` directory.
-   The compose file maps the admin UI to host port `8081`; adjust if that port is also in use.
+   The compose file exposes the admin UI only inside the Docker network; Coolify’s proxy will publish it via `mail.ipuniverse.org`.
 
 ## 2. Secure the Admin UI
 
-1. Open `http://localhost:8081` (or the Coolify forwarded port) and log in with:
+1. Open `http://mail.ipuniverse.org` (or `https://mail.ipuniverse.org` once Coolify issues a certificate) and log in with:
    - username: `admin`
    - password: `change_me_admin`
 2. **Immediately** change the password under **Account → Security**.
@@ -116,7 +116,7 @@ Stalwart exposes:
 
 - **IMAP (993)** – traditional clients.
 - **JMAP** – JSON API; enable it under **Protocols → JMAP** in the admin UI and expose the configured port.
-- **Admin REST API (8081 → container 8080)** – for automation (create accounts, read queue, etc.).
+- **Admin REST API (`mail.ipuniverse.org` → container 8080)** – for automation (create accounts, read queue, etc.).
 
 For app-side processing you can:
 
@@ -127,10 +127,10 @@ For app-side processing you can:
 ## 8. Coolify Deployment Notes
 
 - Add both containers to the same Docker network in Coolify.
-- Expose the necessary ports (25, 465, 587, 993, 8081, and optional 4190 for Sieve, 8000 for JMAP) with firewall rules allowing the Internet to reach 25/465/587/993.
+- Expose the necessary ports (25, 465, 587, 993, and optional 4190 for Sieve, 8000 for JMAP); HTTP/HTTPS for the admin UI flow through Coolify’s proxy automatically.
 - Persist the volumes (`stalwart/config`, `stalwart/data`, `stalwart/logs`, `postgres/data`).
 - Configure health checks (e.g., TCP on 587 and 993).
-- Coolify’s “magic” environment variable `SERVICE_URL_MAIL_8080=/` (already included) makes Traefik forward `http://mail.ipuniverse.org` to container port 8080. If you change the service name, update this variable accordingly.
+- Coolify’s “magic” environment variable `SERVICE_URL_MAIL_8080=/` (already included) makes Traefik forward the domain to container port 8080. If you rename the service from `mail`, update the variable accordingly.
 
 ## 9. Operational Tips
 

@@ -34,15 +34,15 @@ services:
       STALWART__ADMIN__USERNAME: admin
       STALWART__ADMIN__PASSWORD: change_me_admin
       SERVICE_URL_MAIL_8080: /
-      SERVICE_FDQN_MAIL_8080: /
     depends_on:
       - postgres
+    expose:
+      - "8080" # expose admin UI to Coolify/Traefik within the Docker network
     ports:
       - "25:25" # SMTP inbound (MX delivery)
       - "465:465" # SMTPS (implicit TLS)
       - "587:587" # SMTP submission (STARTTLS)
       - "993:993" # IMAPS (secure IMAP for clients)
-      - "8081:8080"
     volumes:
       - ./stalwart/config:/opt/stalwart/config
       - ./stalwart/data:/opt/stalwart/data
