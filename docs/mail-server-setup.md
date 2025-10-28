@@ -130,7 +130,7 @@ For app-side processing you can:
 - Expose the necessary ports (25, 465, 587, 993, 8081, and optional 4190 for Sieve, 8000 for JMAP) with firewall rules allowing the Internet to reach 25/465/587/993.
 - Persist the volumes (`stalwart/config`, `stalwart/data`, `stalwart/logs`, `postgres/data`).
 - Configure health checks (e.g., TCP on 587 and 993).
-- If Coolify proxies the app through Traefik, set the internal service port to 8080 or add a label like `traefik.http.services.stalwart-admin.loadbalancer.server.port=8080` so the proxy reaches the admin UI.
+- If Coolify proxies the app through Traefik, keep the labels baked into `compose.yml` (update `Host(\`mail.ipuniverse.org\`)` to your domain) or set the service port to 8080 in the Coolify UI so <http://mail.ipuniverse.org> routes correctly.
 
 ## 9. Operational Tips
 
