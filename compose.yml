@@ -34,6 +34,7 @@ services:
       STALWART__ADMIN__USERNAME: admin
       STALWART__ADMIN__PASSWORD: change_me_admin
       SERVICE_URL_MAIL_8080: /
+      SERVICE_FDQN_MAIL_8080: /
     depends_on:
       - postgres
     ports:
@@ -41,6 +42,7 @@ services:
       - "465:465" # SMTPS (implicit TLS)
       - "587:587" # SMTP submission (STARTTLS)
       - "993:993" # IMAPS (secure IMAP for clients)
+      - "8080:8080"
     volumes:
       - ./stalwart/config:/opt/stalwart/config
       - ./stalwart/data:/opt/stalwart/data
